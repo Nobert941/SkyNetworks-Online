@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SkyNetworks — an African task and services marketplace.">
+  <title>SkyNetworks | Get things done, together</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-mark">S</span><span>Sky<span class="brand-light">Networks</span><small>AFRICA'S TASK MARKETPLACE</small></span></a>
+  <nav><a href="#browse">Browse tasks</a><a href="#how">How it works</a><a href="#safety">Trust & safety</a><a href="#terms">Terms</a></nav>
+  <div class="top-actions"><button class="text-btn" id="loginBtn">Log in</button><button class="primary small" id="postTop">Post a task</button><button class="menu-btn" id="menuBtn">☰</button></div>
+</header>
+<main>
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span></span> BUILT FOR AFRICA. READY FOR EVERYWHERE.</div>
+    <h1>Get it done.<br><em>Make it happen.</em></h1>
+    <p>Find trusted local help, share your skills and agree on the work — all in one place.</p>
+    <div class="hero-buttons"><button class="primary" id="heroPost">Post a task <span>→</span></button><a class="secondary" href="#browse">Explore tasks</a></div>
+    <div class="proof"><div class="avatars"><b>JM</b><b>AK</b><b>LN</b></div><span><strong>Local people. Real solutions.</strong><br>Work, services and opportunities in your community.</span></div>
+  </div>
+  <div class="hero-art">
+    <div class="map-card"><div class="map-top"><span>NEARBY ACTIVITY</span><span class="live-dot">● LIVE DEMO</span></div><div class="map-grid">
+      <div class="road r1"></div><div class="road r2"></div><div class="road r3"></div>
+      <span class="pin p1">⌖</span><span class="pin p2">⌖</span><span class="pin p3">⌖</span><span class="pin p4">⌖</span>
+      <div class="map-label l1">Westlands</div><div class="map-label l2">Kilimani</div><div class="map-label l3">CBD</div>
+      <div class="map-center">SKY<br>NETWORKS</div>
+    </div><div class="map-foot"><span>📍 Nairobi, Kenya</span><span>Map preview</span></div></div>
+    <div class="float-card"><span class="float-icon">✓</span><div><b>Agreement reached</b><small>Keep conversations on-platform</small></div></div>
+  </div>
+</section>
+<section class="search-wrap" id="browse"><div class="search-heading"><div><span class="eyebrow">OPPORTUNITIES AROUND YOU</span><h2>What do you need done?</h2></div><button class="outline" id="allTasks">View all tasks →</button></div>
+  <div class="searchbar"><span>⌕</span><input id="searchInput" placeholder="Try “plumber”, “graphic design”, “delivery”…"><select id="categoryFilter"><option value="">All categories</option><option>Home & repairs</option><option>Business & digital</option><option>Delivery & errands</option><option>Events & lifestyle</option><option>Learning & tutoring</option></select><button class="primary" id="searchBtn">Search</button></div>
+  <div class="category-row"><button class="cat active" data-cat="">All</button><button class="cat" data-cat="Home & repairs">🏠 Home & repairs</button><button class="cat" data-cat="Business & digital">💻 Digital</button><button class="cat" data-cat="Delivery & errands">🛵 Delivery</button><button class="cat" data-cat="Events & lifestyle">🎉 Events</button><button class="cat" data-cat="Learning & tutoring">📚 Tutoring</button></div>
+  <div class="section-title"><h3>Tasks people are talking about</h3><span id="resultCount">6 opportunities</span></div>
+  <div class="task-layout"><div class="task-grid" id="taskGrid"></div><aside class="map-aside"><div class="aside-head"><b>Explore nearby</b><span>Map preview</span></div><div class="mini-map"><div class="mini-road a"></div><div class="mini-road b"></div><div class="mini-road c"></div><i class="mpin m1">●</i><i class="mpin m2">●</i><i class="mpin m3">●</i><i class="mpin m4">●</i><label>NAIROBI</label></div><p>See approximate task areas before you agree. Exact addresses should only be shared privately when necessary.</p><button class="outline full" id="mapInfo">How location privacy works</button></aside></div>
+</section>
+<section class="how" id="how"><div class="eyebrow">SIMPLE FROM START TO FINISH</div><h2>A better way to get work done</h2><div class="steps">
+  <article><span>01</span><div class="step-icon">✍</div><h3>Post or discover</h3><p>Describe the task, set a budget and choose a general location. Or browse opportunities that match your skills.</p></article>
+  <article><span>02</span><div class="step-icon">💬</div><h3>Discuss in public</h3><p>Ask questions in the task thread. Compare offers and clarify scope without exposing private contact details.</p></article>
+  <article><span>03</span><div class="step-icon">🤝</div><h3>Agree privately</h3><p>Move to a private conversation to confirm price, timing, milestones and the final scope of work.</p></article>
+  <article><span>04</span><div class="step-icon">★</div><h3>Complete & review</h3><p>Mark work complete, confirm payment arrangements and leave a review to build community trust.</p></article>
+</div></section>
+<section class="trust" id="safety"><div><div class="eyebrow">TRUST IS THE FOUNDATION</div><h2>Your work. Your data.<br><em>Your control.</em></h2><p>SkyNetworks is designed to keep agreements clear and conversations safer. Public discussions help everyone understand a task; private messages protect the details that should stay between the parties.</p><a href="#terms" class="underlink">Read our platform rules →</a></div><div class="trust-cards"><article><b>◉ Public by design</b><p>Public task threads are visible to signed-in members. Avoid sharing phone numbers, email addresses, payment credentials or exact home addresses there.</p></article><article><b>▣ Private when agreed</b><p>After selecting a preferred provider, open a private thread for sensitive project details. Private does not mean immune from lawful safety review.</p></article><article><b>♢ Fair platform fees</b><p>Show the service fee before confirmation. The proposed default is a 10% provider fee, configurable by the platform owner.</p></article></div></section>
+<section class="cta"><div><span class="eyebrow">YOUR NEXT OPPORTUNITY STARTS HERE</span><h2>Ready to make something happen?</h2><p>Post a task or put your skills in front of people who need them.</p></div><button class="primary" id="ctaPost">Get started <span>→</span></button></section>
+<section class="terms" id="terms"><div><div class="eyebrow">CLEAR EXPECTATIONS</div><h2>Terms & conditions</h2><p class="muted">This is a starter policy outline for the prototype, not legal advice. Have a Kenyan/African technology lawyer review it before launch and adapt it to each country you serve.</p></div><div class="terms-grid">
+  <article><h3>1. Platform role</h3><p>SkyNetworks introduces customers and independent service providers. Unless a separate written service is offered, the platform is not the employer, contractor or guarantor of either party.</p></article>
+  <article><h3>2. Fees & payments</h3><p>The platform must display any service fee, who pays it, taxes and refund rules before a user accepts an offer. Do not collect money through this demo.</p></article>
+  <article><h3>3. Conduct & contact details</h3><p>No harassment, fraud, spam, threats or attempts to bypass agreed platform fees. Public posts must not contain phone numbers, email addresses, payment details or personal addresses.</p></article>
+  <article><h3>4. Privacy & moderation</h3><p>Collect only necessary data, explain retention and deletion, restrict staff access, secure accounts and provide a way to report content. Private messages may be reviewed only under a disclosed, lawful safety process.</p></article>
+  <article><h3>5. Disputes & cancellations</h3><p>Users should document scope, price, deadlines and milestones in the agreement. Publish a fair complaint, cancellation, refund and escalation process before enabling transactions.</p></article>
+  <article><h3>6. Reviews & account action</h3><p>Reviews must reflect genuine experiences. SkyNetworks may investigate reports and restrict accounts for policy violations, with an appeal route where appropriate.</p></article>
+</div><p class="terms-note">Privacy notice, cookie notice, prohibited-items policy, provider standards and country-specific consumer protection terms should be separate linked documents in production.</p></section>
+</main>
+<footer><a class="brand" href="#"><span class="brand-mark">S</span><span>Sky<span class="brand-light">Networks</span><small>AFRICA'S TASK MARKETPLACE</small></span></a><span>© 2026 SkyNetworks. A marketplace concept built for local communities.</span><div><a href="#terms">Terms</a><a href="#safety">Safety</a><a href="mailto:hello@skynetworks.example">Contact</a></div></footer>
+<div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="close" id="closeModal">×</button><div id="modalContent"></div></section></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+</body></html>
