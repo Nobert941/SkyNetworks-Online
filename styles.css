@@ -10,3 +10,216 @@
 
 /* Clear, persistent feedback for account creation and login */
 .auth-status{display:none;margin-top:14px;padding:12px;border-radius:8px;background:#edf6ff;color:#174b7c;font-size:12px;line-height:1.55;overflow-wrap:anywhere}.auth-status.visible{display:block}.auth-status.error{background:#fff0f0;color:#922d2d}#authForm button:disabled{opacity:.6;cursor:wait}
+
+
+/* SkyNetworks task-browser split layout inspired by the supplied Airtasker reference.
+   Keeps the existing branding, Supabase features and Leaflet maps. */
+.task-layout{
+  grid-template-columns:minmax(280px, 38%) minmax(0, 62%);
+  gap:12px;
+  align-items:stretch;
+}
+.task-grid{
+  grid-template-columns:1fr;
+  align-content:start;
+}
+.map-aside{
+  position:sticky;
+  top:96px;
+  height:calc(100vh - 120px);
+  display:flex;
+  flex-direction:column;
+  min-height:360px;
+}
+.map-aside .browse-map{
+  flex:1;
+  height:auto;
+  min-height:260px;
+}
+.map-aside p{margin:0 0 10px}
+.task-card{padding:15px}
+.task-card h4{margin:10px 0 6px}
+.task-card p{min-height:0;margin:5px 0 10px}
+
+@media(max-width:680px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  .topbar{
+    height:54px;
+    padding:0 12px;
+    position:sticky;
+    top:0;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .brand{font-size:15px;gap:7px}
+  .brand-mark{width:30px;height:30px;border-radius:9px;font-size:17px}
+  .brand small{font-size:6px;letter-spacing:1px;margin-top:3px}
+  .topbar nav{top:54px}
+  .top-actions{gap:7px}
+  .top-actions .text-btn{display:none}
+  .top-actions .primary.small{display:inline-flex;padding:8px 10px;font-size:10px;white-space:nowrap}
+  .menu-btn{display:block;font-size:19px;padding:5px}
+
+  /* On small screens, open directly into the two-panel task/map experience. */
+  .hero,.conversation-intro,.how,.trust,.terms,.cta,footer{display:none!important}
+  .search-wrap{
+    display:flex;
+    flex-direction:column;
+    height:calc(100dvh - 54px);
+    min-height:420px;
+    padding:8px 6px 5px;
+    overflow:hidden;
+  }
+  .search-heading{display:none}
+  .searchbar{
+    flex:0 0 auto;
+    min-height:38px;
+    padding:4px 6px;
+    gap:5px;
+    border-radius:7px;
+    box-shadow:none;
+  }
+  .searchbar>span{font-size:19px;padding-left:3px}
+  .searchbar input{min-width:0;width:20px;font-size:11px}
+  .searchbar select{flex:0 0 100px;min-width:0;padding:7px 4px;font-size:9px}
+  .searchbar .primary{flex:0 0 auto;padding:8px 10px;font-size:10px}
+  .category-row{
+    flex:0 0 auto;
+    display:flex;
+    overflow-x:auto;
+    white-space:nowrap;
+    gap:5px;
+    padding:6px 0;
+    scrollbar-width:none;
+  }
+  .category-row::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 auto;padding:6px 9px;font-size:9px}
+  .section-title{
+    flex:0 0 auto;
+    margin:3px 0 6px;
+    padding:0 2px;
+    align-items:center;
+  }
+  .section-title h3{font-size:12px}
+  .section-title span{font-size:9px}
+  .task-layout{
+    flex:1 1 auto;
+    min-height:0;
+    width:100%;
+    display:grid;
+    grid-template-columns:minmax(145px, 36%) minmax(0, 1fr);
+    gap:4px;
+    overflow:hidden;
+  }
+  .task-grid{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    min-width:0;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:0 1px 12px 0;
+    scrollbar-width:thin;
+  }
+  .task-card{
+    flex:0 0 auto;
+    min-width:0;
+    padding:8px 7px;
+    border-radius:8px;
+    box-shadow:none;
+  }
+  .task-card:hover{transform:none;box-shadow:none}
+  .task-meta{font-size:7px;gap:3px;flex-wrap:wrap}
+  .task-category{padding:3px 5px;font-size:7px}
+  .task-card h4{font-size:10px;line-height:1.35;margin:7px 0 4px}
+  .task-card p{font-size:8px;line-height:1.35;margin:3px 0 6px}
+  .task-bottom{
+    display:flex;
+    align-items:flex-start;
+    flex-direction:column;
+    gap:5px;
+    padding-top:6px;
+    margin-top:6px;
+  }
+  .task-price{font-size:10px}
+  .task-place{font-size:8px;overflow-wrap:anywhere}
+  .task-bottom button{font-size:8px;padding:2px 0;text-align:left}
+  .map-aside{
+    position:relative;
+    top:auto;
+    display:flex!important;
+    flex-direction:column;
+    height:100%;
+    min-height:0;
+    min-width:0;
+    padding:5px;
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .aside-head{font-size:9px;gap:3px}
+  .aside-head span{font-size:7px}
+  .map-aside .browse-map{
+    flex:1 1 auto;
+    width:100%;
+    height:100%;
+    min-height:0;
+    margin:5px 0;
+    border-radius:5px;
+  }
+  .map-aside p,.map-aside #locateBtn{display:none}
+  .leaflet-control-zoom a{width:25px!important;height:25px!important;line-height:25px!important}
+}
+@media(max-width:380px){
+  .topbar{padding:0 8px}
+  .brand{font-size:13px}
+  .top-actions .primary.small{padding:7px 8px}
+  .task-layout{grid-template-columns:minmax(135px, 39%) minmax(0,1fr)}
+  .searchbar select{flex-basis:88px}
+}
+
+/* Guided, customer-friendly task publishing form */
+.post-task-header{padding:2px 0 15px;border-bottom:1px solid #edf1f6;margin-bottom:17px}
+.post-task-header h2{font-size:25px;margin:9px 34px 5px 0}
+.post-task-header>p{margin:0;color:#718198;max-width:450px}
+.post-progress{display:flex;gap:6px;margin-top:15px}
+.post-progress span{height:4px;flex:1;border-radius:10px;background:#e8edf4}
+.post-progress span.active{background:var(--bright)}
+.post-form-section{padding:15px 0;border-bottom:1px solid #edf1f6}
+.post-section-heading{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.post-step{width:27px;height:27px;flex:0 0 27px;border-radius:50%;display:grid;place-items:center;background:#eaf2fc;color:#276bc1;font-size:11px;font-weight:800}
+.post-section-heading h3{font:800 14px Manrope;color:var(--navy);margin:0}
+.post-section-heading p{font-size:10px;color:#8794a5;margin:3px 0 0}
+.post-task-form .field{margin:10px 0}
+.post-task-form .field label{font-size:11px;display:flex;justify-content:space-between;gap:8px}
+.post-task-form .field label span{font-size:9px;color:#8a98a9;font-weight:600}
+.post-task-form .field input,.post-task-form .field select,.post-task-form .field textarea{padding:12px 13px;font-size:12px;border-radius:8px;background:#fff}
+.post-task-form .field textarea{min-height:105px;line-height:1.5}
+.post-task-form .field small{font-size:9px;color:#8794a5;line-height:1.5}
+.currency-input{display:flex;align-items:center;border:1px solid #dce4ee;border-radius:8px;overflow:hidden}
+.currency-input>span{padding:0 12px;color:#65758b;font-size:11px;font-weight:800;border-right:1px solid #e5eaf0;background:#f7f9fc;align-self:stretch;display:flex;align-items:center}
+.currency-input input{border:0!important;box-shadow:none!important}
+.location-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.location-actions>span{font-size:9px;color:#8794a5}
+.location-actions button{padding:9px 12px}
+.post-privacy-note{display:flex;flex-direction:column;gap:4px;background:#f1f6fc;border:1px solid #e1ebf7;padding:12px;border-radius:9px;margin:15px 0;color:#53677f}
+.post-privacy-note b{font-size:11px;color:var(--navy)}
+.post-privacy-note span{font-size:10px;line-height:1.5}
+.post-agreement{font-size:10px;line-height:1.5;color:#586a80;display:flex;align-items:flex-start;gap:8px}
+.post-agreement input{margin-top:2px}
+.task-submit-status{display:none;margin-top:12px;padding:11px 12px;border-radius:8px;font-size:11px;line-height:1.55;background:#fff4e8;color:#87531b;overflow-wrap:anywhere}
+.task-submit-status.visible{display:block}
+.task-submit-status.error{background:#fff0ef;color:#a12d2d;border:1px solid #f4d2cf}
+.task-submit-status.success{background:#eaf8f1;color:#176c4b;border:1px solid #ccebdc}
+.post-actions{position:sticky;bottom:-30px;background:#fff;padding:13px 0 0;margin-top:15px;border-top:1px solid #edf1f6}
+.post-actions .primary{min-width:155px}
+.post-actions .primary:disabled{opacity:.65;cursor:wait;transform:none}
+@media(max-width:680px){
+ .modal-backdrop{padding:8px;align-items:flex-end}
+ .modal{width:100%;max-height:94dvh;border-radius:16px 16px 10px 10px;padding:21px 17px 17px}
+ .post-task-header h2{font-size:21px}
+ .post-form-section{padding:12px 0}
+ .post-actions{bottom:-17px;padding:10px 0 0}
+ .post-actions .primary{flex:1}
+}
