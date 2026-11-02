@@ -34,8 +34,15 @@ function initMaps(){
  setTimeout(()=>{mapHero.invalidateSize();mapMain.invalidateSize();},350);
 }
 window.addEventListener('resize',()=>{if(mapMain)setTimeout(()=>mapMain.invalidateSize(),120);if(mapHero)setTimeout(()=>mapHero.invalidateSize(),120);});
+function normalizeTask(t){
+ return {...t,
+  location:t.area_name??t.location??'',
+  latitude:t.lat??t.latitude??null,
+  longitude:t.lng??t.longitude??null
+ };
+}
 function renderMap(){if(!mapMain)return;markers.forEach(m=>mapMain.removeLayer(m));markers=[];tasks.forEach(t=>{if(Number.isFinite(Number(t.latitude))&&Number.isFinite(Number(t.longitude))&&t.latitude!==null&&t.longitude!==null){const m=L.marker([Number(t.latitude),Number(t.longitude)]).addTo(mapMain).bindPopup(`<b>${escapeHtml(t.title)}</b><br>${escapeHtml(t.location||'Approximate area')}`);markers.push(m);}});}
-async function loadTasks(){const {data,error}=await db.from('tasks').select('id,owner_id,title,description,category,budget,location,latitude,longitude,created_at,status').eq('status','open').order('created_at',{ascending:false}).limit(80);if(error){console.error(error);toast('Could not load tasks: '+error.message);return;}tasks=data||[];renderTasks();renderMap();}
+async function loadTasks(){const {data,error}=await db.from('tasks').select('id,owner_id,title,description,category,budget,currency,area_name,lat,lng,created_at,status').eq('status','open').order('created_at',{ascending:false}).limit(80);if(error){console.error(error);toast('Could not load tasks: '+error.message);return;}tasks=(data||[]).map(normalizeTask);renderTasks();renderMap();}
 function renderTasks(){const q=$('searchInput').value.toLowerCase(),cat=$('categoryFilter').value;const rows=tasks.filter(t=>(!cat||t.category===cat)&&(!q||[t.title,t.description,t.category,t.location].join(' ').toLowerCase().includes(q)));$('resultCount').textContent=rows.length+' open task'+(rows.length===1?'':'s');$('taskGrid').innerHTML=rows.map(t=>`<article class="task-card"><div class="task-meta"><span class="task-category">${escapeHtml(t.category)}</span><span>${t.created_at?new Date(t.created_at).toLocaleDateString():'Recently'}</span></div><h4>${escapeHtml(t.title)}</h4><p>${escapeHtml(t.description)}</p><div class="task-bottom"><div><div class="task-price">${money(t.budget)}</div><div class="task-place">⌖ ${escapeHtml(t.location||'Area not specified')}</div></div><button data-open-task="${t.id}">View & discuss →</button></div></article>`).join('')||'<p>No open tasks found. Sign in and post the first task.</p>';document.querySelectorAll('[data-open-task]').forEach(b=>b.onclick=()=>openTask(b.dataset.openTask));}
 function authModal(){
  modal(`<h2 id="modalTitle">Your SkyNetworks account</h2><p>Sign in or create an account to post tasks, make offers and message other members.</p><form id="authForm" novalidate><div class="field"><label>Email address</label><input name="email" type="email" autocomplete="email" required></div><div class="field"><label>Password</label><input name="password" type="password" minlength="8" autocomplete="new-password" required></div><div class="field"><label>Display name (new accounts)</label><input name="display_name" autocomplete="name" placeholder="Your name"></div><div class="modal-actions"><button type="button" class="outline" id="signupBtn">Create account</button><button type="submit" class="primary" id="loginSubmit">Log in</button></div><div id="authStatus" class="auth-status" role="status" aria-live="polite"></div></form><p class="muted">New accounts may need to confirm their email before signing in. Check your inbox and spam folder.</p>`);
@@ -97,7 +104,12 @@ function postTask(){
   button.disabled=true;button.textContent='Finding approximate location…';
   navigator.geolocation.getCurrentPosition(p=>{form.elements.latitude.value=p.coords.latitude.toFixed(6);form.elements.longitude.value=p.coords.longitude.toFixed(6);button.disabled=false;button.textContent='✓ Approximate location added';showTaskStatus('Approximate map location added.');},()=>{button.disabled=false;button.textContent='◎ Use approximate location';showTaskStatus('We could not access your location. Please enter your town or neighbourhood manually.',true);},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
  };
- form.onsubmit=async e=>{
+ publish.addEventListener('click',e=>{
+   e.preventDefault();
+   if(typeof form.requestSubmit==='function') form.requestSubmit();
+   else form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+  });
+  form.onsubmit=async e=>{
   e.preventDefault();
   if(publish.disabled)return;
   const d=new FormData(form),title=String(d.get('title')||'').trim(),description=String(d.get('description')||'').trim(),location=String(d.get('location')||'').trim(),budget=Number(d.get('budget'));
@@ -107,13 +119,16 @@ function postTask(){
   const {data:sessionData,error:sessionError}=await db.auth.getSession();
   const activeUser=sessionData?.session?.user||user;
   if(sessionError||!activeUser){showTaskStatus('Your sign-in session has expired. Please log in again, then publish your task.',true);return;}
-  const row={owner_id:activeUser.id,title,category:String(d.get('category')),description,budget,location,latitude:d.get('latitude')?Number(d.get('latitude')):null,longitude:d.get('longitude')?Number(d.get('longitude')):null,status:'open'};
+  const rawLat=String(d.get('latitude')||'').trim(),rawLng=String(d.get('longitude')||'').trim();
+  const parsedLat=rawLat===''?null:Number(rawLat),parsedLng=rawLng===''?null:Number(rawLng);
+  const gpsValid=parsedLat!==null&&parsedLng!==null&&Number.isFinite(parsedLat)&&Number.isFinite(parsedLng)&&parsedLat>=-90&&parsedLat<=90&&parsedLng>=-180&&parsedLng<=180;
+  const row={owner_id:activeUser.id,title,category:String(d.get('category')),description,budget,currency:'KES',area_name:location,lat:gpsValid?parsedLat:null,lng:gpsValid?parsedLng:null,status:'open'};
   publish.disabled=true;publish.textContent='Publishing your task…';showTaskStatus('Saving your task securely. Please keep this window open.');
   try{
-   const {data,error}=await db.from('tasks').insert(row).select('id,owner_id,title,description,category,budget,location,latitude,longitude,created_at,status').single();
+   const {data,error}=await db.from('tasks').insert(row).select('id,owner_id,title,description,category,budget,currency,area_name,lat,lng,created_at,status').single();
    if(error){console.error('SkyNetworks task publication error:',{message:error.message,code:error.code,details:error.details,hint:error.hint});let advice='';if(error.code==='42501'||/row-level security|permission denied/i.test(error.message)){advice=' Your account may not have permission to create tasks. Check the tasks INSERT policy in Supabase.';}else if(/column .* does not exist|schema cache/i.test(error.message)){advice=' The tasks table columns in Supabase may not match the website fields.';}else if(/contact|phone|email/i.test(error.message)){advice=' Remove contact information from the title, description or location.';}showTaskStatus('Your task was not published: '+error.message+advice,true);return;}
    if(!data){showTaskStatus('Supabase did not return a saved task record. Please refresh the task list before trying again.',true);return;}
-   if(!tasks.some(t=>String(t.id)===String(data.id)))tasks.unshift(data);
+   const savedTask=normalizeTask(data);if(!tasks.some(t=>String(t.id)===String(savedTask.id)))tasks.unshift(savedTask);
    renderTasks();renderMap();
    status.classList.remove('error');status.classList.add('visible','success');status.textContent='Your task has been published successfully! It is now visible in the open tasks list.';
    publish.textContent='Published ✓';
