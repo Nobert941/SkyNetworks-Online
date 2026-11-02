@@ -7,6 +7,17 @@
 - `supabase-config.js` — project URL and frontend publishable key.
 - `02-supabase-upgrade.sql` — database upgrade to run in Supabase SQL Editor.
 
+## Account signup database error (important)
+If signup displays `Database error saving new user`, the browser signup request is reaching Supabase but a database operation during user creation is failing. This is commonly an `auth.users` trigger that inserts into a profile table with a missing/incompatible column, constraint, or permissions. This is not something a GitHub Pages code change can repair on its own.
+
+1. Open Supabase Dashboard → SQL Editor.
+2. Run the read-only `AUTH-SIGNUP-DIAGNOSTICS.sql` included in this ZIP.
+3. In Supabase Dashboard → Logs → Postgres Logs, inspect the database error at the signup timestamp.
+4. Correct the exact failing trigger/function or schema based on that error. Do not blindly drop auth triggers; they may be required by your app.
+5. In Authentication → Users, verify whether the attempted email was created. Retry signup after the database repair.
+
+The updated `app.js` now reports this as a database-side error and gives the next steps instead of implying that the password is wrong.
+
 ## Important deployment steps
 1. In Supabase Dashboard → SQL Editor, create a new query, paste the complete contents of `02-supabase-upgrade.sql`, and Run it. This is needed for the notification table, database-side public contact filtering, accepted-offer private chat permissions and notifications.
 2. Upload/replace the five website files in the root of your GitHub Pages repository: `index.html`, `styles.css`, `app.js`, `supabase-config.js`, `README.md`.

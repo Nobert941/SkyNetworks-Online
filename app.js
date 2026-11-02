@@ -4,6 +4,16 @@ const db = createClient(window.SUPABASE_URL, window.SUPABASE_PUBLISHABLE_KEY);
 const $ = id => document.getElementById(id);
 let user = null, tasks = [], activeTask = null, mapMain = null, mapHero = null, markers = [], notificationPoll = null;
 const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function explainAuthError(error){
+ const message=String(error?.message||'Unknown authentication error');
+ const code=String(error?.code||'');
+ if(/Database error saving new user/i.test(message)||code==='unexpected_failure'){
+  return 'Supabase could not save this new user. This is a database-side signup error (often a failing auth.users trigger or profile-table constraint), not a password problem. Open Supabase Dashboard → Authentication → Users and SQL Editor, then run the included AUTH-SIGNUP-DIAGNOSTICS.sql. Repair the reported trigger/schema issue and retry. No account was created unless it appears in Authentication → Users.';
+ }
+ if(/email not confirmed/i.test(message)) return 'Email not confirmed. Check your inbox and spam folder, confirm your email, then log in.';
+ if(/invalid login credentials/i.test(message)) return 'Email or password is incorrect, or the account was not created. Check Authentication → Users and try account recovery if needed.';
+ return message;
+}
 function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3800);}
 function modal(html){$('modalContent').innerHTML=html;$('modalBackdrop').classList.add('show');}
 function closeModal(){$('modalBackdrop').classList.remove('show');$('modalContent').innerHTML='';activeTask=null;}
@@ -38,7 +48,7 @@ function authModal(){
   signup.disabled=true;login.disabled=true;signup.textContent='Creating account…';showStatus('Connecting securely to SkyNetworks…');
   try{
    const result=await db.auth.signUp({email,password,options:{data:{display_name}}});
-   if(result.error){showStatus('Account was not created: '+result.error.message,true);return;}
+   if(result.error){console.error('SkyNetworks sign-up error:',{message:result.error.message,code:result.error.code,status:result.error.status});showStatus('Account was not created: '+explainAuthError(result.error),true);return;}
    if(result.data.session){user=result.data.user;showStatus('Your account has been created and you are signed in.');await refreshSession();setTimeout(closeModal,1600);}
    else{showStatus('Registration submitted. Check '+email+' for the confirmation email, then return here and log in. Also check your spam folder.');}
   }catch(err){console.error('SkyNetworks sign-up failed:',err);showStatus('Could not complete registration. Check your internet connection and try again. Details: '+(err?.message||String(err)),true);}
@@ -49,7 +59,7 @@ function authModal(){
   if(!form.querySelector('[name="email"]').checkValidity()){form.querySelector('[name="email"]').reportValidity();return;}
   if(!password){showStatus('Enter your password to log in.',true);return;}
   signup.disabled=true;login.disabled=true;login.textContent='Logging in…';
-  try{const {error}=await db.auth.signInWithPassword({email,password});if(error){showStatus('Login failed: '+error.message,true);return;}closeModal();await refreshSession();toast('You are signed in.');}
+  try{const {error}=await db.auth.signInWithPassword({email,password});if(error){showStatus('Login failed: '+explainAuthError(error),true);return;}closeModal();await refreshSession();toast('You are signed in.');}
   catch(err){console.error('SkyNetworks login failed:',err);showStatus('Login could not be completed: '+(err?.message||String(err)),true);}
   finally{signup.disabled=false;login.disabled=false;login.textContent='Log in';}
  };
