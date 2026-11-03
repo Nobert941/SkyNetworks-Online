@@ -29,6 +29,8 @@ The updated `app.js` now reports this as a database-side error and gives the nex
 - Header: logo, Post a task pill, nav, Sign up / Log in.
 - Browse: filter pills (search, category, location, price, sort), compact task cards with price, location, category, posted time, Open status and offer count, beside a full-height map with price pins. Hover/click syncs list and map. On phones the map opens with the Show map / Show list pill.
 
+- Distance filter (5–100 km) measured from your location (or central Nairobi if not shared), blue radius circle on the map, km shown on each card, and a Nearest-first sort. Only tasks with map coordinates can be distance-filtered.
+
 ## UI refinements in this build
 - Responsive mobile browsing: task cards use the full screen width; the map is opened with a Show map / Show tasks switch instead of squeezing the task list into a narrow column.
 - Desktop split task list and map, matching the task-marketplace browsing pattern in the reference image.

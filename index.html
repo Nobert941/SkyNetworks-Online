@@ -23,8 +23,9 @@
   <div class="pill search-pill"><span class="ico">⌕</span><input id="searchInput" placeholder="Search tasks" aria-label="Search tasks"></div>
   <label class="pill select-pill"><select id="categoryFilter" aria-label="Category"><option value="">All categories</option><option>Home & repairs</option><option>Business & digital</option><option>Delivery & errands</option><option>Events & lifestyle</option><option>Learning & tutoring</option></select></label>
   <div class="pill search-pill loc-pill"><span class="ico">⌖</span><input id="locationFilter" placeholder="Any location" aria-label="Location"></div>
+  <label class="pill select-pill"><span class="ico">↔</span><select id="distanceFilter" aria-label="Distance"><option value="">Any distance</option><option value="5">Within 5 km</option><option value="10">Within 10 km</option><option value="25">Within 25 km</option><option value="50">Within 50 km</option><option value="100">Within 100 km</option></select></label>
   <label class="pill select-pill"><select id="priceFilter" aria-label="Price"><option value="">Any price</option><option value="0-1000">Under KSh 1,000</option><option value="1000-5000">KSh 1,000 – 5,000</option><option value="5000-20000">KSh 5,000 – 20,000</option><option value="20000-">KSh 20,000+</option></select></label>
-  <label class="pill select-pill"><select id="sortFilter" aria-label="Sort"><option value="new">Newest first</option><option value="high">Price: high to low</option><option value="low">Price: low to high</option></select></label>
+  <label class="pill select-pill"><select id="sortFilter" aria-label="Sort"><option value="new">Newest first</option><option value="high">Price: high to low</option><option value="low">Price: low to high</option><option value="near">Nearest first</option></select></label>
   <button class="pill clear-pill" id="allTasks" type="button">Clear</button>
   <button class="pill map-pill" id="mapToggle" type="button" aria-expanded="false">Show map</button>
   <button id="searchBtn" class="sr-only" type="button">Search</button>
