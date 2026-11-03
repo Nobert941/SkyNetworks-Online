@@ -1,4 +1,4 @@
-# SkyNetworks refined MVP
+# SkyNetworks — Complete Refined Marketplace
 
 ## Files
 - `index.html` — marketplace layout and UI.
@@ -23,6 +23,16 @@ The updated `app.js` now reports this as a database-side error and gives the nex
 2. Upload/replace the five website files in the root of your GitHub Pages repository: `index.html`, `styles.css`, `app.js`, `supabase-config.js`, `README.md`.
 3. Do not upload `README-old.md` or this SQL file to the website root unless you want it visible publicly. Keep a local copy of the SQL migration.
 4. Wait for GitHub Pages deployment, then hard-refresh the site.
+
+## Airtasker-style refinement (v20261103)
+- New file `airtasker.css` (upload next to `styles.css`). `index.html`, `app.js` also changed.
+- Header: logo, Post a task pill, nav, Sign up / Log in.
+- Browse: filter pills (search, category, location, price, sort), compact task cards with price, location, category, posted time, Open status and offer count, beside a full-height map with price pins. Hover/click syncs list and map. On phones the map opens with the Show map / Show list pill.
+
+## UI refinements in this build
+- Responsive mobile browsing: task cards use the full screen width; the map is opened with a Show map / Show tasks switch instead of squeezing the task list into a narrow column.
+- Desktop split task list and map, matching the task-marketplace browsing pattern in the reference image.
+- Accessible map toggle state and map resize when the map becomes visible.
 
 ## Features in this build
 - Supabase email/password signup and login.
@@ -57,3 +67,15 @@ In-app notifications are stored in Supabase. The company email `networke@gmail.c
 - Before public commercial launch, review all RLS policies, test with separate customer/provider accounts, add moderation/reporting, account deletion, privacy retention, rate limiting, dispute workflows, and legal terms.
 - This MVP does not implement M-Pesa, escrow, payouts, SMS/email delivery, push notifications, or a full admin console.
 - Never expose Supabase service-role/secret keys. The publishable key is intended for browser use.
+
+
+## Install / update checklist
+1. Back up your existing GitHub repository before replacing files.
+2. Upload `index.html`, `styles.css`, `app.js`, and `supabase-config.js` to the same folder as the current site. Keep filenames and casing exactly as shown.
+3. In Supabase SQL Editor, review and run `02-supabase-upgrade.sql` once if you have not already run it. Back up your database first; inspect the SQL and test with separate customer/provider accounts.
+4. If signup still fails with `Database error saving new user`, run the read-only `AUTH-SIGNUP-DIAGNOSTICS.sql` and inspect Supabase Postgres logs. Frontend changes alone cannot repair a failing database trigger.
+5. Commit the changed files to GitHub and wait for Pages to deploy. Open the website in Chrome, then hard-refresh or clear that site's cached files.
+6. Test account creation, login, posting a task, task search/category filtering, making and accepting an offer, public discussion, private negotiation, notifications, and map behavior on desktop and mobile.
+
+## Important
+This package does not log in to GitHub or publish changes on your behalf. You can upload these files to your repository yourself. Never share your GitHub password, access token, or Supabase service-role/secret key. The Supabase publishable key in `supabase-config.js` is intended for browser use; database security depends on correctly configured Row Level Security policies.
