@@ -31,6 +31,12 @@ The updated `app.js` now reports this as a database-side error and gives the nex
 
 - Distance filter (5–100 km) measured from your location (or central Nairobi if not shared), blue radius circle on the map, km shown on each card, and a Nearest-first sort. Only tasks with map coordinates can be distance-filtered.
 
+## Update v20261103-2 (run 03-fix-task-posting.sql FIRST)
+- `03-fix-task-posting.sql` fixes the error `record "new" has no field "visibility"` when publishing a task, and adds the columns `is_remote`, `due_date`, `time_of_day`.
+- Location pill opens a panel: task type (All / In person / Remote), area, distance slider (5-250 km), Use my location.
+- Tasks are placed on the map automatically from the typed town (rounded to about 1 km). Exact GPS is never stored.
+- Cards show location + km, due date or Flexible, time of day, offers, and poster initials when profiles are readable.
+
 ## UI refinements in this build
 - Responsive mobile browsing: task cards use the full screen width; the map is opened with a Show map / Show tasks switch instead of squeezing the task list into a narrow column.
 - Desktop split task list and map, matching the task-marketplace browsing pattern in the reference image.
