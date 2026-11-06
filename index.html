@@ -548,8 +548,10 @@ html:not(.logged-in-hint) body:not(.logged-in) .featured.has-tasks{display:block
 .oc-avail{background:#f2f5fb;border-radius:8px;padding:6px 10px;margin:8px 0;font-size:13px}
 .oc-msg{margin:8px 0 0;font-size:14px}.oc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}
 @media(min-width:900px){
-.modal-backdrop.task-panel{background:transparent;pointer-events:none;padding:0;align-items:stretch;justify-content:flex-end}
-.modal-backdrop.task-panel #modalContent{pointer-events:auto;position:fixed;top:var(--head-h,60px);right:0;bottom:0;width:calc(100% - 480px);max-width:none;max-height:none;border-radius:0;overflow:auto;box-shadow:-8px 0 24px #0f1b4d1f}
+.modal-backdrop.task-panel{background:transparent;pointer-events:none;padding:0}
+.modal-backdrop.task-panel .modal{pointer-events:auto;position:fixed;top:var(--head-h,60px);right:0;bottom:0;left:480px;width:auto;max-width:none;max-height:none;margin:0;border-radius:0;padding:22px 24px;overflow-x:hidden;overflow-y:auto;box-shadow:-8px 0 24px #0f1b4d1f}
+.modal-backdrop.task-panel #modalContent{position:static;width:auto;max-width:100%}
+.modal-backdrop.task-panel .close{position:absolute;top:8px;right:12px}
 }
 
 </style>
