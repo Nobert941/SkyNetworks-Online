@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>SkyNetworks Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6fb;color:#0f1b4d;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#0f1b4d;color:#fff;position:sticky;top:0;z-index:5}
+header b{font-size:16px}header span{margin-left:auto;font-size:12px;opacity:.8}header a{color:#9fc2ff;font-size:13px}
+main{max-width:900px;margin:0 auto;padding:14px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}.tabs button{flex:none;border:0;border-radius:999px;padding:9px 16px;background:#e3e9f6;color:#33406e;font-weight:700;cursor:pointer}.tabs button.on{background:#1f6fe5;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{background:#fff;border:1px solid #dde4f0;border-radius:12px;padding:14px;margin-bottom:10px}
+.stat b{display:block;font-size:26px}.stat span{font-size:12px;color:#5b6785}
+.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.muted{color:#5b6785;font-size:13px}
+.badge{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;background:#e3f6ea;color:#137a3f}.badge.bad{background:#fde7e4;color:#b42318}.badge.warn{background:#fff1d6;color:#9a5b00}
+button.act{border:1px solid #1f6fe5;background:#fff;color:#1f6fe5;border-radius:999px;padding:7px 14px;font-weight:700;cursor:pointer;margin:6px 6px 0 0}button.act.danger{border-color:#b42318;color:#b42318}
+input{width:100%;padding:11px;border:1px solid #cbd5e8;border-radius:10px;font-size:15px;margin-bottom:8px}.go{border:0;background:#1f6fe5;color:#fff;border-radius:999px;padding:11px 20px;font-weight:700;cursor:pointer}
+#msg{position:fixed;left:12px;right:12px;bottom:12px;background:#0f1b4d;color:#fff;padding:12px 14px;border-radius:12px;display:none;z-index:9}#msg.err{background:#b42318}
+</style></head><body>
+<header><b>SkyNetworks Admin</b><span id="who"></span><a href="./">View site</a></header>
+<main id="app"><p>Loading…</p></main><div id="msg"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const db=supabase.createClient(window.SUPABASE_URL,window.SUPABASE_PUBLISHABLE_KEY);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const when=d=>d?new Date(d).toLocaleString():'—';
+const money=n=>n==null?'—':'KSh '+new Intl.NumberFormat('en-KE').format(n);
+let role=null,tab='dashboard',timer;
+function say(m,bad){const e=$('msg');e.textContent=m;e.className=bad?'err':'';e.style.display='block';clearTimeout(timer);timer=setTimeout(()=>{e.style.display='none';},bad?9000:4000);}
+async function call(fn,args){const {data,error}=await db.rpc(fn,args||{});if(error)throw new Error(error.message);return data;}
+function canAct(){return role==='super_admin'||role==='moderator';}
+function loginView(){$('app').innerHTML='<div class="card"><h2>Staff sign-in</h2><input id="em" type="email" placeholder="Email" autocomplete="username"><input id="pw" type="password" placeholder="Password" autocomplete="current-password"><button class="go" id="go">Sign in</button></div>';
+ $('go').onclick=async()=>{const {error}=await db.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});if(error){say(error.message,true);return;}start();};}
+function deniedView(){$('app').innerHTML='<div class="card"><h2>Staff only</h2><p class="muted">This area is for SkyNetworks staff. If you should have access, ask a super admin to add your account.</p></div>';}
+function shell(){$('who').textContent=role.replace('_',' ');
+ $('app').innerHTML='<div class="tabs">'+[['dashboard','Dashboard'],['users','Users'],['tasks','Tasks'],['audit','Audit log']].map(t=>'<button data-t="'+t[0]+'" class="'+(t[0]===tab?'on':'')+'">'+t[1]+'</button>').join('')+'</div><div id="view"></div>';
+ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;shell();});
+ ({dashboard,users,tasks,audit})[tab]();}
+async function dashboard(){try{const s=await call('admin_stats');const items=[['Users',s.users],['New this week',s.new_users_7d],['Open tasks',s.tasks_open],['Offers pending',s.offers_pending],['Offers total',s.offers_total],['Hidden tasks',s.tasks_hidden],['Suspended or banned',s.suspended]];
+ $('view').innerHTML='<div class="grid">'+items.map(i=>'<div class="card stat"><b>'+esc(i[1])+'</b><span>'+i[0]+'</span></div>').join('')+'</div>';}catch(e){say(e.message,true);}}
+async function users(q){$('view').innerHTML='<input id="q" placeholder="Search name or email" value="'+esc(q||'')+'"><button class="go" id="sq">Search</button><div id="list" style="margin-top:12px">Loading…</div>';
+ $('sq').onclick=()=>users($('q').value);
+ try{const rows=await call('admin_list_users',{p_search:q||null});
+ $('list').innerHTML=rows.map(u=>{const st=u.account_status||'active';const cls=st==='active'?'':st==='banned'?' bad':' warn';
+  const btns=canAct()?(st==='active'?'<button class="act" data-s="suspended" data-u="'+u.id+'">Suspend</button><button class="act danger" data-s="banned" data-u="'+u.id+'">Ban</button>':'<button class="act" data-s="active" data-u="'+u.id+'">Reactivate</button>'):'';
+  return '<div class="card"><div class="row"><b>'+esc(u.name||'(no name)')+'</b><span class="badge'+cls+'">'+esc(st)+'</span></div><div class="muted">'+esc(u.email)+'</div><div class="muted">Joined '+when(u.created_at)+' · Last sign-in '+when(u.last_sign_in_at)+'</div><div class="muted">Tasks posted: '+u.tasks+' · Offers made: '+u.offers+'</div>'+btns+'</div>';}).join('')||'<p class="muted">No users found.</p>';
+ document.querySelectorAll('[data-u]').forEach(b=>b.onclick=async()=>{const reason=prompt('Reason (required, saved in the audit log):');if(!reason)return;try{await call('admin_set_user_status',{p_user:b.dataset.u,p_status:b.dataset.s,p_reason:reason});say('Done.');users($('q').value);}catch(e){say(e.message,true);}});
+ }catch(e){$('list').textContent='';say(e.message,true);}}
+async function tasks(q){$('view').innerHTML='<input id="q" placeholder="Search task title or owner email" value="'+esc(q||'')+'"><button class="go" id="sq">Search</button><div id="list" style="margin-top:12px">Loading…</div>';
+ $('sq').onclick=()=>tasks($('q').value);
+ try{const rows=await call('admin_list_tasks',{p_search:q||null});
+ $('list').innerHTML=rows.map(t=>{const btn=canAct()?(t.hidden?'<button class="act" data-h="0" data-t="'+t.id+'">Restore</button>':'<button class="act danger" data-h="1" data-t="'+t.id+'">Hide</button>'):'';
+  return '<div class="card"><div class="row"><b>'+esc(t.title)+'</b><span class="badge'+(t.hidden?' bad':'')+'">'+(t.hidden?'hidden':esc(t.status))+'</span></div><div class="muted">'+esc(t.owner_email)+' · '+money(t.budget)+' · '+t.offers+' offer(s)</div><div class="muted">Posted '+when(t.created_at)+'</div>'+btn+'</div>';}).join('')||'<p class="muted">No tasks found.</p>';
+ document.querySelectorAll('[data-t]').forEach(b=>{if(!b.dataset.h)return;b.onclick=async()=>{const reason=prompt('Reason (required, saved in the audit log):');if(!reason)return;try{await call('admin_set_task_hidden',{p_task:b.dataset.t,p_hidden:b.dataset.h==='1',p_reason:reason});say('Done.');tasks($('q').value);}catch(e){say(e.message,true);}};});
+ }catch(e){$('list').textContent='';say(e.message,true);}}
+async function audit(){$('view').innerHTML='<div id="list">Loading…</div>';try{const rows=await call('admin_audit');
+ $('list').innerHTML=rows.map(a=>'<div class="card"><div class="row"><b>'+esc(a.action)+'</b><span class="muted">'+when(a.created_at)+'</span></div><div class="muted">By '+esc(a.admin_email)+' · '+esc(a.target_type)+' '+esc(a.target_id)+'</div><div>'+esc(a.reason)+'</div></div>').join('')||'<p class="muted">Nothing logged yet.</p>';}catch(e){$('list').textContent='';say(e.message,true);}}
+async function start(){const {data:{session}}=await db.auth.getSession();if(!session){loginView();return;}
+ try{role=await call('admin_role');}catch(e){role=null;}
+ if(!role){deniedView();return;}shell();}
+start();
+</script></body></html>
