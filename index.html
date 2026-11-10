@@ -619,15 +619,16 @@ html:not(.logged-in-hint) body:not(.logged-in) footer{padding-bottom:20px}
 .respond-bar .offer-blue,.budget-box .respond-bar .offer-blue{background:var(--at-blue,#1f6fe5);color:#fff;border:0;font-weight:700;box-shadow:0 6px 16px rgba(31,111,229,.28)}
 .respond-bar .offer-blue:hover{background:var(--at-blue-d,#1757b8)}
 
-/* Public task chat: black ink, slightly larger text */
-#paneQ .bubble{font-size:13.5px;line-height:1.5;color:#000}
-#paneQ .bubble div{color:#000}
-#paneQ .bubble small{font-size:10.5px;color:#3a3a3a}
-#paneQ .chat-compose input{font-size:13.5px;color:#000}
-#paneQ .chat-compose input::placeholder{color:#555}
-#paneQ .empty-chat{font-size:13px;color:#000}
-#paneQ .privacy-hint{font-size:12px!important;color:#000!important}
-#paneQ .chat-title b{color:#000;font-size:14px}
+/* Task conversations (public questions, offers, private chat): black ink, slightly larger text */
+.modal .bubble,.modal .bubble div{font-size:14px!important;line-height:1.5!important;color:#000!important}
+.modal .bubble small{font-size:11px!important;color:#333!important}
+.modal .chat-compose input{font-size:14px!important;color:#000!important}
+.modal .chat-compose input::placeholder{color:#555!important}
+.modal .empty-chat,.modal .privacy-hint{font-size:13px!important;color:#000!important}
+.modal .chat-title b{font-size:15px!important;color:#000!important}
+.modal .oc-msg{font-size:14px!important;line-height:1.5!important;color:#000!important}
+.modal .oc-foot small,.modal .oc-who small{font-size:12px!important;color:#222!important}
+.modal .oc-avail{font-size:14px!important;color:#000!important}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
